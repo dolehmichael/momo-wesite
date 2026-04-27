@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoMo Vendor System | Home</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ---- Home-page specific ---- */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #0d5c73 55%, #0a7a5e 100%);
+      min-height: 88vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 60px 24px;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='20' cy='20' r='3'/%3E%3Ccircle cx='60' cy='60' r='3'/%3E%3Ccircle cx='60' cy='20' r='1.5'/%3E%3Ccircle cx='20' cy='60' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      width: 100%;
+      position: relative;
+    }
+    .hero-text h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero-text h1 span { color: var(--secondary); }
+    .hero-text p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 32px;
+      max-width: 480px;
+    }
+    .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .hero-visual {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 32px;
+      backdrop-filter: blur(6px);
+    }
+    .hero-visual-title {
+      color: var(--secondary);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .mini-stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+    }
+    .mini-stat-label { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+    .mini-stat-value { color: var(--white); font-weight: 700; font-size: 1.05rem; }
+    .mini-stat-badge {
+      background: rgba(18,184,134,0.25);
+      color: #6ee7c7;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 20px;
+    }
+    .mini-bar-row { margin-top: 20px; }
+    .mini-bar-label { display: flex; justify-content: space-between; font-size: 0.83rem; color: rgba(255,255,255,0.65); margin-bottom: 5px; }
+    .mini-bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.1); overflow: hidden; margin-bottom: 10px; }
+    .mini-bar-fill { height: 100%; border-radius: 4px; }
+    .fill-gold   { background: var(--secondary); }
+    .fill-green  { background: var(--accent); }
+    .fill-teal   { background: #5ec8e0; }
+
+    /* ---- Services ---- */
+    .services-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 22px; }
+    .service-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    .service-card:hover { transform: translateY(-6px); border-color: var(--secondary); }
+    .service-icon {
+      width: 64px; height: 64px;
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 16px;
+    }
+    .service-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--primary); }
+    .service-card p  { font-size: 0.88rem; color: var(--muted); }
+
+    /* ---- Why choose ---- */
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+    .why-list { list-style: none; }
+    .why-list li {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .why-list li:last-child { border-bottom: none; }
+    .why-check {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: rgba(18,184,134,0.12); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; flex-shrink: 0; margin-top: 2px;
+    }
+    .why-list strong { display: block; font-size: 0.97rem; font-weight: 700; margin-bottom: 2px; }
+    .why-list span   { font-size: 0.88rem; color: var(--muted); }
+    .why-image-block {
+      background: linear-gradient(135deg, var(--primary), #0d5c73);
+      border-radius: 20px;
+      padding: 40px 32px;
+      color: var(--white);
+    }
+    .why-image-block h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 12px; }
+    .why-image-block p  { color: rgba(255,255,255,0.75); font-size: 0.95rem; margin-bottom: 24px; }
+
+    /* ---- CTA Banner ---- */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--secondary), #c98b10);
+      border-radius: 20px;
+      padding: 48px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .cta-banner h2 { font-size: 1.6rem; font-weight: 800; color: var(--primary); }
+    .cta-banner p  { color: rgba(10,61,74,0.75); font-size: 0.95rem; margin-top: 6px; }
+
+    /* ---- Login Styles ---- */
+    .login-section {
+      min-height: 88vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, #0d5c73 55%, #0a7a5e 100%);
+      padding: 60px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='20' cy='20' r='3'/%3E%3Ccircle cx='60' cy='60' r='3'/%3E%3Ccircle cx='60' cy='20' r='1.5'/%3E%3Ccircle cx='20' cy='60' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .login-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .login-header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .login-header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(232,160,32,0.1);
+    }
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--secondary);
+      color: var(--primary);
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .login-btn:hover {
+      background: #c98b10;
+    }
+    .error-message {
+      color: #dc2626;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .demo-accounts {
+      margin-top: 24px;
+      padding: 16px;
+      background: rgba(232,160,32,0.05);
+      border: 1px solid rgba(232,160,32,0.2);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--white);
+      font-size: 0.9rem;
+    }
+    .nav-user #userInfo {
+      font-weight: 600;
+    }
+
+    /* ---- Quick Transaction Modal ---- */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+    }
+    .modal-content {
+      background: var(--white);
+      margin: 10% auto;
+      padding: 32px;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      animation: modalFadeIn 0.3s ease;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .modal-header h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s ease;
+    }
+    .modal-close:hover {
+      background: rgba(0,0,0,0.1);
+    }
+    .modal-form .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .modal-form .form-group { margin-bottom: 16px; }
+    .modal-form .form-group label { font-size: 0.9rem; }
+    .modal-form .form-group input,
+    .modal-form .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+    .modal-form .btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .services-grid { grid-template-columns: repeat(2,1fr); }
+      .why-grid { grid-template-columns: 1fr; }
+      .cta-banner { text-align: center; justify-content: center; }
+      .login-card { padding: 32px 24px; }
+      .modal-content { margin: 20% auto; padding: 24px; }
+    }
+    @media (max-width: 480px) {
+      .services-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand" aria-label="MoMo Vendor Home">
+        <div class="brand-icon" aria-hidden="true">💳</div>
+        Momo<span>Vendor</span>
+      </a>
+      <ul class="nav-links" role="menubar">
+        <li role="none"><a href="index.html" role="menuitem" class="active">Home</a></li>
+        <li role="none"><a href="transactions.html" role="menuitem">Transactions</a></li>
+        <li role="none"><a href="reports.html" role="menuitem">Reports</a></li>
+        <li role="none"><a href="about.html" role="menuitem">About</a></li>
+      </ul>
+      <div class="nav-user" id="navUser" style="display: none;">
+        <span id="userInfo"></span>
+        <button onclick="logout()" class="btn btn-outline" style="margin-left: 12px; padding: 6px 12px; font-size: 0.9rem;">Logout</button>
+      </div>
+      <button class="nav-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== LOGIN SECTION ===== -->
+  <section class="login-section" id="loginSection" style="display: none;" aria-label="Login section">
+    <div class="login-card">
+      <div class="login-header">
+        <div style="font-size: 3rem; margin-bottom: 16px;" aria-hidden="true">🔐</div>
+        <h1>Login to MoMo Vendor</h1>
+        <p>Enter your credentials to access the system</p>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+      </form>
+      <div class="demo-accounts">
+        <strong>Demo Accounts:</strong><br>
+        Manager: manager / manager<br>
+        Mbah Rufai: Mbah Rufai / agent<br>
+        Ruth Boateng: Ruth Boateng / agent<br>
+        Shafi Abdul: Shafi Abdul / agent
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" aria-label="Welcome section" id="mainContent">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-badge" style="display:inline-block;background:rgba(232,160,32,.2);border:1px solid rgba(232,160,32,.4);color:var(--secondary);border-radius:30px;padding:4px 16px;font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;">
+          Mobile Money Management
+        </div>
+        <h1>Manage Your <span>MoMo Vendor</span> Operations with Ease</h1>
+        <p>A complete web-based system for recording transactions, managing customers, and generating reconciliation reports for mobile money vendors.</p>
+        <div class="hero-cta">
+          <a href="transactions.html" class="btn btn-primary">📊 View All Transactions</a>
+          <a href="reports.html" class="btn btn-outline" style="color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.4);">📈 View Reports</a>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-visual-title">Today's Overview</div>
+        <div class="mini-stat">
+          <span class="mini-stat-label">Total Transactions</span>
+          <span class="mini-stat-value">142</span>
+          <span class="mini-stat-badge">+12%</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-label">Float Balance</span>
+          <span class="mini-stat-value">GH₵ 8,450</span>
+          <span class="mini-stat-badge">Healthy</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-label">Active Customers</span>
+          <span class="mini-stat-value">318</span>
+          <span class="mini-stat-badge">+5</span>
+        </div>
+        <div class="mini-bar-row">
+          <div class="mini-bar-label"><span>Deposits</span><span>54%</span></div>
+          <div class="mini-bar"><div class="mini-bar-fill fill-gold" style="width:54%"></div></div>
+          <div class="mini-bar-label"><span>Withdrawals</span><span>30%</span></div>
+          <div class="mini-bar"><div class="mini-bar-fill fill-green" style="width:30%"></div></div>
+          <div class="mini-bar-label"><span>Airtime / Transfer</span><span>16%</span></div>
+          <div class="mini-bar"><div class="mini-bar-fill fill-teal" style="width:16%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section class="section" aria-label="Services offered">
+    <div class="container">
+      <div class="fade-in">
+        <p class="section-subtitle" style="text-transform:uppercase;letter-spacing:.07em;font-weight:700;color:var(--secondary);font-size:.85rem;">What We Offer</p>
+        <h2 class="section-title">Core MoMo Services</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="services-grid fade-in">
+        <div class="service-card">
+          <div class="service-icon" style="background:rgba(10,61,74,0.08)" aria-hidden="true">💰</div>
+          <h3>Cash Deposits</h3>
+          <p>Quick and secure cash deposit processing for all major mobile networks.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon" style="background:rgba(232,160,32,0.12)" aria-hidden="true">🏧</div>
+          <h3>Cash Withdrawals</h3>
+          <p>Fast withdrawal services with real-time balance updates and receipts.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon" style="background:rgba(18,184,134,0.12)" aria-hidden="true">🔄</div>
+          <h3>Money Transfer</h3>
+          <p>Seamless inter-network and same-network money transfer operations.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon" style="background:rgba(99,102,241,0.10)" aria-hidden="true">📱</div>
+          <h3>Airtime Purchase</h3>
+          <p>Instant airtime top-up for MTN, Telecel, and other networks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- ===== CTA ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-banner fade-in">
+        <div>
+          <h2>Ready to Streamline Your Operations?</h2>
+          <p>Start recording transactions and managing your customers today.</p>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="transactions.html" class="btn btn-teal">New Transaction</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer role="contentinfo">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Momo<span>Vendor</span></div>
+        <p class="footer-desc">A Mobile Money Vendor Management System designed to automate transaction recording, customer management, and daily reconciliation for MoMo agents.</p>
+      </div>
+      <div>
+        <div class="footer-heading">Quick Links</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="transactions.html">Transactions</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Services</div>
+        <ul class="footer-links">
+          <li><a href="#">Cash Deposits</a></li>
+          <li><a href="#">Cash Withdrawals</a></li>
+          <li><a href="#">Money Transfer</a></li>
+          <li><a href="#">Airtime Purchase</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sege-Moy MoMoVendor System</span>
+      <span></span>
+    </div>
+  </footer>
+
+
+
+  <script src="js/auth.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Initialize auth on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAuth();
+      
+      // Handle login form
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+          const errorMessage = document.getElementById('errorMessage');
+          
+          if (login(username, password)) {
+            checkAuth();
+          } else {
+            errorMessage.textContent = 'Invalid username or password';
+            errorMessage.style.display = 'block';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

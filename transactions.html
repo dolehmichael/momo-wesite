@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoMo Vendor System | Transactions</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .filter-bar {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr auto;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+    }
+    .record-form {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      margin-bottom: 36px;
+    }
+    .record-form h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .tx-type-deposit    { color: #065f46; background: #d1fae5; }
+    .tx-type-withdrawal { color: #92400e; background: #fef3c7; }
+    .tx-type-transfer   { color: #1e40af; background: #dbeafe; }
+    .tx-type-airtime    { color: #5b21b6; background: #ede9fe; }
+    .amount-positive { font-weight: 700; color: #065f46; }
+    .amount-negative { font-weight: 700; color: #991b1b; }
+    .pagination {
+      display: flex; justify-content: center; gap: 8px; margin-top: 24px;
+    }
+    .page-btn {
+      width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid var(--border);
+      background: var(--white); cursor: pointer; font-family: var(--font-main);
+      font-weight: 600; font-size: 0.9rem; transition: var(--transition); color: var(--primary);
+    }
+    .page-btn.active, .page-btn:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: var(--primary); color: var(--white);
+      padding: 14px 22px; border-radius: 10px;
+      font-size: 0.93rem; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(10,61,74,0.25);
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.4s ease; z-index: 9999;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--white);
+      font-size: 0.9rem;
+    }
+    .nav-user #userInfo {
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .filter-bar { grid-template-columns: 1fr 1fr; }
+      .form-grid-3 { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .filter-bar { grid-template-columns: 1fr; }
+      .form-grid-3, .form-grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand" aria-label="MoMo Vendor Home">
+        <div class="brand-icon" aria-hidden="true">💳</div>
+        Momo<span>Vendor</span>
+      </a>
+      <ul class="nav-links" role="menubar">
+        <li role="none"><a href="index.html" role="menuitem">Home</a></li>
+        <li role="none"><a href="transactions.html" role="menuitem" class="active">Transactions</a></li>
+        <li role="none"><a href="reports.html" role="menuitem">Reports</a></li>
+        <li role="none"><a href="about.html" role="menuitem">About</a></li>
+      </ul>
+      <div class="nav-user" id="navUser" style="display: none;">
+        <span id="userInfo"></span>
+        <button onclick="logout()" class="btn btn-outline" style="margin-left: 12px; padding: 6px 12px; font-size: 0.9rem;">Logout</button>
+      </div>
+      <button class="nav-toggle" aria-label="Toggle mobile menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero" role="banner">
+    <div class="hero-badge">Transaction Management</div>
+    <h1>Record &amp; Track Transactions</h1>
+    <p>Log new MoMo transactions, filter existing records, and monitor all financial activity in real time.</p>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <section class="section">
+    <div class="container">
+
+      <!-- Stats Row -->
+      <div class="grid-4 fade-in" style="margin-bottom:36px" role="region" aria-label="Transaction statistics">
+        <div class="stat-card">
+          <div class="stat-icon gold" aria-hidden="true">💰</div>
+          <div>
+            <div class="stat-value" id="totalCount">142</div>
+            <div class="stat-label">Total Today</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green" aria-hidden="true">⬆️</div>
+          <div>
+            <div class="stat-value">GH₵ 24,800</div>
+            <div class="stat-label">Total Deposits</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon red" aria-hidden="true">⬇️</div>
+          <div>
+            <div class="stat-value">GH₵ 19,350</div>
+            <div class="stat-label">Total Withdrawals</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon teal" aria-hidden="true">💼</div>
+          <div>
+            <div class="stat-value">GH₵ 8,450</div>
+            <div class="stat-label">Float Balance</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Transaction Form -->
+      <div class="record-form fade-in" role="region" aria-label="New transaction form">
+        <h3><span aria-hidden="true">➕</span> Record New Transaction</h3>
+        <div id="formAlert" aria-live="polite"></div>
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label" for="custPhone">Customer Phone Number</label>
+            <input type="tel" id="custPhone" class="form-control" placeholder="e.g. 0244123456" maxlength="15" aria-required="true" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="txType">Transaction Type</label>
+            <select id="txType" class="form-control" aria-required="true">
+              <option value="">-- Select Type --</option>
+              <option value="Deposit">Deposit</option>
+              <option value="Withdrawal">Withdrawal</option>
+              <option value="Transfer">Transfer</option>
+              <option value="Airtime">Airtime</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="network">Network</label>
+            <select id="network" class="form-control" aria-required="true">
+              <option value="">-- Select Network --</option>
+              <option value="MTN">MTN</option>
+              <option value="Telecel">Telecel</option>
+              <option value="AT">AT (AirtelTigo)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label" for="amount">Amount (GH₵)</label>
+            <input type="number" id="amount" class="form-control" placeholder="0.00" min="1" step="0.01" aria-required="true" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="agentId">Processed By (Agent)</label>
+            <select id="agentId" class="form-control" disabled>
+              <option value="">-- Select Agent --</option>
+              <option value="AGT001">Mbah Rufai (AGT001)</option>
+              <option value="AGT002">Ruth Boateng (AGT002)</option>
+              <option value="AGT003">Shafi Abdul (AGT003)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="txStatus">Status</label>
+            <select id="txStatus" class="form-control">
+              <option value="Success">Success</option>
+              <option value="Pending">Pending</option>
+              <option value="Failed">Failed</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="recordTransaction()" aria-label="Submit new transaction">Submit Transaction</button>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar fade-in" role="search" aria-label="Filter transactions">
+        <div class="form-group" style="margin:0">
+          <label class="form-label" for="filterType">Type</label>
+          <select id="filterType" class="form-control" onchange="filterTable()" aria-label="Filter by transaction type">
+            <option value="">All Types</option>
+            <option value="Deposit">Deposit</option>
+            <option value="Withdrawal">Withdrawal</option>
+            <option value="Transfer">Transfer</option>
+            <option value="Airtime">Airtime</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label" for="filterNetwork">Network</label>
+          <select id="filterNetwork" class="form-control" onchange="filterTable()" aria-label="Filter by network">
+            <option value="">All Networks</option>
+            <option value="MTN">MTN</option>
+            <option value="Telecel">Telecel</option>
+            <option value="AT">AT</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label" for="filterStatus">Status</label>
+          <select id="filterStatus" class="form-control" onchange="filterTable()" aria-label="Filter by status">
+            <option value="">All Statuses</option>
+            <option value="Success">Success</option>
+            <option value="Pending">Pending</option>
+            <option value="Failed">Failed</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label" for="searchPhone">Search Phone</label>
+          <input type="search" id="searchPhone" class="form-control" placeholder="0244..." oninput="filterTable()" aria-label="Search by phone number" />
+        </div>
+        <button class="btn btn-teal" onclick="resetFilters()" aria-label="Reset all filters">Reset</button>
+      </div>
+
+      <!-- Transactions Table -->
+      <div class="table-wrapper fade-in" role="region" aria-label="Transactions table">
+        <table aria-label="Transaction records">
+          <thead>
+            <tr>
+              <th scope="col">TX ID</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Type</th>
+              <th scope="col">Network</th>
+              <th scope="col">Amount (GH₵)</th>
+              <th scope="col">Agent</th>
+              <th scope="col">Status</th>
+              <th scope="col">Date &amp; Time</th>
+            </tr>
+          </thead>
+          <tbody id="txTableBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="pagination" role="navigation" aria-label="Pagination"></div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer role="contentinfo">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Momo<span>Vendor</span></div>
+        <p class="footer-desc">Automating mobile money vendor operations in Ghana.</p>
+      </div>
+      <div>
+        <div class="footer-heading">Quick Links</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="transactions.html">Transactions</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Services</div>
+        <ul class="footer-links">
+          <li><a href="#">Cash Deposits</a></li>
+          <li><a href="#">Cash Withdrawals</a></li>
+          <li><a href="#">Money Transfer</a></li>
+          <li><a href="#">Airtime Purchase</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sege-Moy MoMoVendor System </span>
+      <span>I</span>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const isDbSupported = 'indexedDB' in window && window.indexedDB !== null;
+
+    // ---- Sample data ----
+    const allTransactions = [
+      { id:'TX-00142', phone:'0244100001', type:'Deposit',    network:'MTN',     amount:500.00,  agent:'AGT001', status:'Success', date:'2026-03-23 08:10' },
+      { id:'TX-00141', phone:'0554200012', type:'Withdrawal', network:'Telecel', amount:250.00,  agent:'AGT002', status:'Success', date:'2026-03-23 08:05' },
+      { id:'TX-00140', phone:'0208300023', type:'Airtime',    network:'AT',      amount:20.00,   agent:'AGT001', status:'Success', date:'2026-03-23 07:58' },
+      { id:'TX-00139', phone:'0244100001', type:'Transfer',   network:'MTN',     amount:800.00,  agent:'AGT003', status:'Pending', date:'2026-03-23 07:45' },
+      { id:'TX-00138', phone:'0244500034', type:'Deposit',    network:'MTN',     amount:1500.00, agent:'AGT001', status:'Success', date:'2026-03-22 17:33' },
+      { id:'TX-00137', phone:'0554600045', type:'Withdrawal', network:'Telecel', amount:300.00,  agent:'AGT002', status:'Failed',  date:'2026-03-22 17:20' },
+      { id:'TX-00136', phone:'0208700056', type:'Deposit',    network:'AT',      amount:700.00,  agent:'AGT003', status:'Success', date:'2026-03-22 16:55' },
+      { id:'TX-00135', phone:'0244800067', type:'Airtime',    network:'MTN',     amount:50.00,   agent:'AGT001', status:'Success', date:'2026-03-22 16:40' },
+      { id:'TX-00134', phone:'0554900078', type:'Transfer',   network:'Telecel', amount:1200.00, agent:'AGT002', status:'Success', date:'2026-03-22 15:30' },
+      { id:'TX-00133', phone:'0244000089', type:'Deposit',    network:'MTN',     amount:200.00,  agent:'AGT001', status:'Pending', date:'2026-03-22 15:15' },
+      { id:'TX-00132', phone:'0208100090', type:'Withdrawal', network:'AT',      amount:450.00,  agent:'AGT003', status:'Success', date:'2026-03-22 14:05' },
+      { id:'TX-00131', phone:'0244200011', type:'Airtime',    network:'MTN',     amount:30.00,   agent:'AGT002', status:'Success', date:'2026-03-22 13:50' },
+    ];
+
+    let displayData = [...allTransactions];
+    const ROWS_PER_PAGE = 8;
+    let currentPage = 1;
+
+    function typeBadgeClass(type) {
+      const m = { Deposit:'tx-type-deposit', Withdrawal:'tx-type-withdrawal', Transfer:'tx-type-transfer', Airtime:'tx-type-airtime' };
+      return m[type] || '';
+    }
+    function statusBadge(s) {
+      const m = { Success:'badge-success', Pending:'badge-warning', Failed:'badge-danger' };
+      return m[s] || 'badge-info';
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('txTableBody');
+      const start = (currentPage - 1) * ROWS_PER_PAGE;
+      const rows = displayData.slice(start, start + ROWS_PER_PAGE);
+      tbody.innerHTML = rows.length === 0
+        ? '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">No transactions found.</td></tr>'
+        : rows.map(tx => `
+          <tr>
+            <td><code style="font-size:.82rem;color:var(--primary)">${tx.id}</code></td>
+            <td>${tx.phone}</td>
+            <td><span class="badge ${typeBadgeClass(tx.type)}">${tx.type}</span></td>
+            <td>${tx.network}</td>
+            <td class="${tx.type === 'Withdrawal' ? 'amount-negative' : 'amount-positive'}">
+              ${tx.type === 'Withdrawal' ? '−' : '+'}${tx.amount.toFixed(2)}
+            </td>
+            <td>${tx.agent}</td>
+            <td><span class="badge ${statusBadge(tx.status)}">${tx.status}</span></td>
+            <td style="font-size:.85rem;color:var(--muted)">${tx.date}</td>
+          </tr>`).join('');
+      renderPagination();
+    }
+
+    function renderPagination() {
+      const total = Math.ceil(displayData.length / ROWS_PER_PAGE);
+      const pg = document.getElementById('pagination');
+      pg.innerHTML = '';
+      for (let i = 1; i <= total; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+        btn.textContent = i;
+        btn.setAttribute('aria-label', 'Page ' + i);
+        btn.onclick = () => { currentPage = i; renderTable(); };
+        pg.appendChild(btn);
+      }
+    }
+
+    function filterTable() {
+      const type    = document.getElementById('filterType').value;
+      const network = document.getElementById('filterNetwork').value;
+      const status  = document.getElementById('filterStatus').value;
+      const phone   = document.getElementById('searchPhone').value.trim();
+      displayData = allTransactions.filter(tx =>
+        (!type    || tx.type    === type) &&
+        (!network || tx.network === network) &&
+        (!status  || tx.status  === status) &&
+        (!phone   || tx.phone.includes(phone))
+      );
+      currentPage = 1;
+      renderTable();
+    }
+
+    function resetFilters() {
+      ['filterType','filterNetwork','filterStatus'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('searchPhone').value = '';
+      displayData = [...allTransactions];
+      currentPage = 1;
+      renderTable();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerHTML = '✅ ' + msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    function recordTransaction() {
+      const phone   = document.getElementById('custPhone').value.trim();
+      const type    = document.getElementById('txType').value;
+      const network = document.getElementById('network').value;
+      const amount  = parseFloat(document.getElementById('amount').value);
+      const status  = document.getElementById('txStatus').value;
+      const alertEl = document.getElementById('formAlert');
+
+      if (!phone || !type || !network || isNaN(amount) || amount <= 0) {
+        alertEl.innerHTML = '<div class="alert alert-error">⚠️ Please fill in all required fields with valid values.</div>';
+        return;
+      }
+      
+      // Get agent from logged-in user, not from form (for security)
+      const user = getCurrentUser();
+      if (!user || !user.agentId) {
+        alertEl.innerHTML = '<div class="alert alert-error">⚠️ You must be logged in as an agent to record transactions.</div>';
+        return;
+      }
+      const agent = user.agentId;
+      
+      alertEl.innerHTML = '';
+
+      const now = new Date();
+      const pad = (value) => String(value).padStart(2, '0');
+      const formattedDate = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+      const newTx = {
+        id: 'TX-' + String(allTransactions.length + 1).padStart(5,'0'),
+        phone, type, network, amount, agent, status,
+        date: formattedDate
+      };
+
+      allTransactions.unshift(newTx);
+      displayData = [...allTransactions];
+      renderTable();
+
+      if (isDbSupported) {
+        saveTransactionToDB(newTx).catch((err) => console.error('Failed to save transaction:', err));
+      }
+
+      // Reset form
+      ['custPhone','amount'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('txType').value = '';
+      document.getElementById('network').value = '';
+
+      showToast('Transaction ' + newTx.id + ' recorded successfully!');
+
+      const countEl = document.getElementById('totalCount');
+      countEl.textContent = parseInt(countEl.textContent) + 1;
+    }
+
+    async function initializeTransactionApp() {
+      if (!isDbSupported) {
+        displayData = [...allTransactions];
+        renderTable();
+        autoPopulateAgent();
+        return;
+      }
+
+      try {
+        const savedTransactions = await getAllTransactionsFromDB();
+        if (savedTransactions.length > 0) {
+          allTransactions.splice(0, allTransactions.length, ...savedTransactions);
+        } else {
+          const seeded = await seedDatabase(allTransactions);
+          allTransactions.splice(0, allTransactions.length, ...seeded);
+        }
+      } catch (error) {
+        console.error('IndexedDB initialization error:', error);
+      }
+
+      displayData = [...allTransactions];
+      renderTable();
+      autoPopulateAgent();
+    }
+
+    // Auto-populate agent field with logged-in agent
+    function autoPopulateAgent() {
+      const user = getCurrentUser();
+      const agentField = document.getElementById('agentId');
+      
+      if (user && user.agentId && agentField) {
+        agentField.value = user.agentId;
+        agentField.disabled = true; // Prevent changing agent
+      }
+    }
+
+    initializeTransactionApp();
+  </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoMo Vendor System | About</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .team-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px 18px; text-align: center; box-shadow: var(--shadow); transition: var(--transition);
+    }
+    .team-card:hover { transform: translateY(-4px); border-color: var(--secondary); }
+    .team-avatar {
+      width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 800; color: var(--white);
+      background: linear-gradient(135deg, var(--primary), #0d5c73);
+    }
+    .team-name { font-size: .93rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .team-index { font-size: .8rem; color: var(--muted); font-family: var(--font-mono); }
+    .entity-table td:first-child { font-weight: 700; color: var(--primary); }
+    .rule-list { counter-reset: rule; }
+    .rule-item {
+      counter-increment: rule;
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .rule-item:last-child { border-bottom: none; }
+    .rule-num {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: var(--primary); color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .8rem; font-weight: 800; flex-shrink: 0;
+    }
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:var(--border); }
+    .timeline-item { position: relative; padding-bottom: 28px; }
+    .timeline-dot {
+      position: absolute; left: -24px; top: 4px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--secondary); border: 2px solid var(--white);
+      box-shadow: 0 0 0 2px var(--secondary);
+    }
+    .timeline-date { font-size: .8rem; font-weight: 700; color: var(--secondary); margin-bottom: 4px; }
+    .timeline-title { font-size: .95rem; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+    .timeline-desc { font-size: .88rem; color: var(--muted); }
+    .access-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow);
+    }
+    .access-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 14px; }
+    .privilege-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: .9rem; border-bottom: 1px solid var(--border); }
+    .privilege-item:last-child { border-bottom: none; }
+    .privilege-icon { font-size: 1rem; }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--white);
+      font-size: 0.9rem;
+    }
+    .nav-user #userInfo {
+      font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+      .team-grid { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand" aria-label="MoMo Vendor Home">
+        <div class="brand-icon" aria-hidden="true">💳</div>
+        Momo<span>Vendor</span>
+      </a>
+      <ul class="nav-links" role="menubar">
+        <li role="none"><a href="index.html" role="menuitem">Home</a></li>
+        <li role="none"><a href="transactions.html" role="menuitem">Transactions</a></li>
+        <li role="none"><a href="reports.html" role="menuitem">Reports</a></li>
+        <li role="none"><a href="about.html" role="menuitem" class="active">About</a></li>
+      </ul>
+      <div class="nav-user" id="navUser" style="display: none;">
+        <span id="userInfo"></span>
+        <button onclick="logout()" class="btn btn-outline" style="margin-left: 12px; padding: 6px 12px; font-size: 0.9rem;">Logout</button>
+      </div>
+      <button class="nav-toggle" aria-label="Toggle mobile menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero" role="banner">
+    <div class="hero-badge">About us</div>
+    <h1>Sege-Moy Vendor Management System</h1>
+    <p></p>
+  </div>
+
+  <!-- PROJECT BACKGROUND -->
+  <section class="section" aria-labelledby="background-heading">
+    <div class="container">
+      <div class="grid-2 fade-in" style="align-items:center">
+        <div>
+          <p class="section-subtitle" style="text-transform:uppercase;letter-spacing:.07em;font-weight:700;color:var(--secondary);font-size:.85rem;">Project Background</p>
+          <h2 class="section-title" id="background-heading">Sege-Moy Ventuers</h2>
+          <div class="divider"></div>
+          <p style="color:var(--muted);margin-bottom:16px;line-height:1.8">
+            Welcome! at Sege-Moy <strong>Mobile Money (MoMo) Vendor Management System</strong>. we make managing your money as mobile as you are. 
+          </p>
+          <p style="color:var(--muted);margin-bottom:16px;line-height:1.8">
+              We performs four core services: <strong>Cash Deposits</strong>, <strong>Cash Withdrawals</strong>, <strong>Money Transfers</strong>, and <strong>Airtime Purchases</strong>
+          </p>
+        </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer role="contentinfo">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Momo<span>Vendor</span></div>
+        <p class="footer-desc">Sege-Moy Ventuers</p>
+      </div>
+      <div>
+        <div class="footer-heading">Quick Links</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="transactions.html">Transactions</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sege-Moy MoMoVendor System </span>
+      <span></span>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
